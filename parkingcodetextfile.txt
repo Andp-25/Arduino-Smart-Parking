@@ -1,0 +1,44 @@
+#include <LiquidCrystal.h>
+
+// initialize the library with the numbers of the interface pins
+LiquidCrystal lcd(12, 11, 5, 4, 3, 1);
+
+void setup() {
+  // set up the LCD's number of columns and rows:
+  lcd.begin(16, 2);
+  // Print a message to the LCD.
+  lcd.print("   PARKING   ");
+  pinMode(6,INPUT);
+  pinMode(7,INPUT);
+  pinMode(8,INPUT);
+  pinMode(9,INPUT);
+}
+
+void loop() {
+ // set the cursor to column 0, line 1
+  // (note: line 1 is the second row, since counting begins with 0):
+  lcd.setCursor(0, 1);
+  if(digitalRead(6)==1){
+  lcd.print("S1X");
+  }
+  else
+  {
+    lcd.print("S1F");
+  }
+  lcd.setCursor(4, 1);
+  if(digitalRead(7)==1){
+  lcd.print("S2X");
+  }
+  else
+  {
+    lcd.print("S2F");
+  }lcd.setCursor(8, 1);
+  if(digitalRead(10)==1){
+  lcd.print("S3X");
+  }
+  else
+  {
+    lcd.print("S3F");
+  }lcd.setCursor(12, 1);
+  
+}

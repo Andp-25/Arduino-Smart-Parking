@@ -1,0 +1,151 @@
+int motor_input1=4; //right
+int motor_input2=3; //right
+int motor_input3=5; //left
+int motor_input4=6; //left
+String voice;
+
+
+#define echoPin 12 
+#define trigPin 7 
+
+long duration; 
+int distance;
+
+void setup()
+
+{
+
+   pinMode(trigPin, OUTPUT); 
+  pinMode(echoPin, INPUT); 
+
+  Serial.begin(9600);
+
+  pinMode(motor_input1, OUTPUT);
+
+  pinMode(motor_input2, OUTPUT);
+
+  pinMode(motor_input3, OUTPUT);
+
+  pinMode(motor_input4, OUTPUT);
+
+}
+
+void loop()
+
+{
+
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(5);
+  digitalWrite(trigPin, LOW);
+  duration = pulseIn(echoPin, HIGH);
+  distance = duration * 0.034 / 2;
+  //distance is in cm here
+  //We have set a threshold distance of 15cm, as we have built a small parking module.
+  //For a larger module, set a greater threshold because the car cannot come to rest at once. It moves forward for some distance even after reaching threshold value due to inertia
+
+     while(Serial.available()>0)
+  {
+    delay(10);
+    char c=Serial.read();
+    if(c=='#')
+    {
+      break;
+    }
+    voice+=c;
+    }
+    //Sometimes Google translate cannot detect numbers as words properly. In such cases,give individual letters as voice input
+   if(voice=="one"||voice=="o n e"||voice=="1"){
+    forward();
+    left();
+    if(distance>15)
+    {
+      forward();
+    }
+    else
+    {
+      stop();
+    }
+     
+    }
+  else
+    if(voice=="three"||voice=="t h r e e"||voice=="3"){
+     forward();
+     forward();
+     forward();
+    left();
+     if(distance>15)
+    {
+      forward();
+    }
+    else
+    {
+      stop();
+    }
+}
+  else
+   if(voice=="two"||voice=="t w o"||voice=="2"){
+     forward();
+     forward();
+    left();
+     if(distance>15)
+    {
+      forward();
+    }
+    else
+    {
+      stop();
+    }
+     
+    }
+  
+    else
+   if(voice=="stop"){
+     stop();
+   
+    }
+   if(voice.length()>0)
+    {
+      Serial.println(voice);
+       voice="";
+    stop();
+    }
+     delay(300); 
+     
+}
+
+void forward()
+{
+   digitalWrite(motor_input1, LOW);
+    digitalWrite(motor_input2, HIGH);
+    digitalWrite(motor_input3, LOW);
+    digitalWrite(motor_input4, HIGH);
+     delay(200);
+}
+void left()
+{
+   digitalWrite(motor_input1, HIGH);
+    digitalWrite(motor_input2, LOW);
+    digitalWrite(motor_input3, LOW);
+    digitalWrite(motor_input4, HIGH);  
+    delay(400);
+}
+void right()
+{
+  digitalWrite(motor_input1, LOW);
+    digitalWrite(motor_input2, HIGH);
+    digitalWrite(motor_input3, HIGH);
+    digitalWrite(motor_input4, LOW);
+    delay(400);
+}
+void stop()
+{
+   digitalWrite(motor_input1, LOW);
+    digitalWrite(motor_input2, LOW);
+    digitalWrite(motor_input3, LOW);
+    digitalWrite(motor_input4, LOW);
+    delay(50);   
+    //set a low delay so that car comes to rest fast and collision is avoided
+
+}
